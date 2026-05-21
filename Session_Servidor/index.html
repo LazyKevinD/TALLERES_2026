@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Sesiones en Servidor</h1>
+
+    <input type="text" id="usuario" placeholder="Usuario">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="login()">Iniciar Sesion</button>
+    <button onclick="logout()">Cerrar Sesion</button>
+
+    <h2 id="resultado"></h2>
+
+    <script>
+        async function Inicio() {
+            const response = await fetch('/login', {
+                method: "POST",
+                headers: ('Content Type', 'aplication/json'),
+                credentials: 'include',
+                body: JSON.stringify({
+                    usuario: document.getElementById('usuario'),value,
+                    password: document.getElementById('password'),value
+                })
+            });
+            const data = await response.json();
+            document.getElementById('resultado').innerText = data.mensaje;
+        }
+
+        async function logout(){
+            const response = await fetch('/logout', {
+                method: "POST",
+                credentials: 'include'
+            });
+            const data = await response.json();
+            document.getElementById('resultado').innerText = data.mensaje;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Base de Datos Local</title>
+</head>
+<body>
+    <h1></h1>
+    <button onclick="conectarDB()">Cargar Tabla de Usuarios</button>
+    <button onclick="guardarUsuario()">Registro</button>
+    <button onclick="consultar()">Cargar Tabla de Usuarios</button>
+    <br><br>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Sexo</th>
+                <th>Acciones</th>    
+            </tr>
+        </thead>
+        <tbody id="cuerpo-tabla">
+
+        </tbody>
+    </table>
+
+    <script>
+        let db;
+
+        function conectarDB(){
+            const request = indexedDB.open("MangoBD", 1);
+
+            request.onsuccess = (e) => {
+                db = e.target.result;
+                alert("Base de datos abierta con éxito");
+            };
+
+            request.onupgradeneeded = function(e){
+                const dbUpgrade = e.target.result;
+                if(!dbUpgrade.objectStoreNames.contains("usuarios")){
+                    dbUpgrade.createObjectStore("usuarios", {keyPath: "id"});
+                    console.log("Almacen 'Usuarios' creado");
+                }
+            };
+
+            request.onerror = (e) => {
+                console.error("Eror al abrir la BD:", e.target.error);
+            }
+        }
+
+        function guardarUsuario(){
+            if(!db){
+                alert("Primero debes conectar a la base de datos");
+                return;
+            }
+
+            try{
+                const transaction = db.transaction(["usuarios"], "readwrite");
+                const almacen = transaction.objectStore("usuarios");
+
+                const nuevoUsuario = {
+                    id: Date.now(),
+                    nombre: "El Mango",
+                    sexo: "M",
+                    tema: "oscuro",
+                    fechaRegistro: "2026-06-01"
+                };
+
+                const request = almacen.add(nuevoUsuario);
+
+                request.onsuccess = () => {
+                    console.log("Usuario guardado:", nuevoUsuario);
+                    alert("Usuario guardado con éxito");
+                };
+
+                request.onerror = (e) => {
+                    console.error("Error al guardar el usuario:", e.target.error);
+                };
+            } catch (error) {
+                console.error("Error al guardar el usuario:", error);
+            }
+        }
+
+        function consultar(){
+            if(!db){
+                alert("Primero debes conectar a la base de datos");
+                return;
+            }
+
+            const tabla = document.getElementById("cuerpo-tabla");
+            tabla.innerHTML = "";
+
+            const transaction = db.transaction(["usuarios"], "readonly");
+            const almacen = transaction.objectStore("usuarios");
+            const cursorRequest = almacen.openCursor();
+
+            cursorRequest.onsuccess = (e) => {
+                const cursor = e.target.result;
+
+                if(cursor){
+                    const u = cursor.value;
+                    tabla.innerHTML += `
+
+                        <tr>
+                            <td>${u.id}</td>
+                            <td>${u.nombre}</td>
+                            <td>${u.sexo}</td>
+                            <td><button onclick="eliminarRegistro(${u.id})">Eliminar</button></td>
+                        <tr>
+                    `;
+
+                    cursor.continue();
+                }       
+            };
+
+            cursorRequest.onerror = (e) => {
+                console.error("Error al consultar los usuarios:", e.target.error);
+            };
+        }
+
+        function eliminarRegistro(idBorrar) {
+            if(!confirm("¿Seguro que quieres eliminar el ID: " + idBorrar + " ?")) return;
+
+            const transaction = db.transaction(["usuarios"], "readwrite");
+            const almacen = transaction.objectStore("usuarios");
+
+            const peticion = almacen.delete(idBorrar);
+
+            peticion.onsuccess = () => {
+                alert("Registro " + idBorrar + " eliminado con éxito");
+                consultar();
+            };
+
+            peticion.onerror = (e) => {
+                console.error("Error al eliminar el registro:", e.target.error);
+            };
+        }
+    </script>
+</body>
+</html>

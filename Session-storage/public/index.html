@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Session Storage</h1>
+    <input type="text" id="nombre" placeholder="Escribe algo...">
+    <button onclick="guardar()">GUARDAR</button>
+    <button onclick="mostrar()">MOSTRAR</button>
+    <button onclick="borrar()">BORRAR</button>
+
+    <h2 id="resultados"></h2>
+
+    <script>
+        function guardar() {
+            const nombre = document.getElementById('nombre').value;
+            sessionStorage.setItem("usuario", nombre);
+            alert("Nombre guardado");
+        }
+
+        function mostrar() {
+            const nombre = sessionStorage.getItem("usuario");
+            document.getElementById('resultados').innerText = nombre ? "HOLA " + nombre : "No hay nombre guardado";
+        }
+
+        function borrar() {
+            sessionStorage.removeItem("usuario");
+            document.getElementById('resultados').innerText = "";
+        }
+
+        if(sessionStorage.getItem("visitas")) {
+            let visitas = parseInt(sessionStorage.getItem("visitas")) +1;
+        }else{
+            sessionStorage.setItem("visitas", visitas);
+        }
+
+        console.log("Número de visitas: " + sessionStorage.getItem("visitas"));
+
+    </script>
+
+    
+</body>
+</html>
