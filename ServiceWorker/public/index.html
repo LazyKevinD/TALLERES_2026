@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Worker</title>
+</head>
+<body>
+    <h1>Hola Mundo</h1>    
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js")
+                .then(registration => {
+                    console.log("Service Worker registrado con éxito:", registration);
+                })
+                .catch(error => {
+                    console.error("Error al registrar el Service Worker:", error);
+                });
+        } else {
+            console.warn("Service Workers no son soportados en este navegador.");
+        }
+    </script>
+</body>
+</html>
