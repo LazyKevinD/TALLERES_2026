@@ -1,4 +1,3 @@
-server.js 
 const express = require('express');
 const session = require('express-session');
 const app = express();
@@ -15,7 +14,7 @@ app.use(session({
 
 app.post('/login', (req, res) => {
     const { usuario, password } = req.body;
-    if (usuario === 'judith' && password === '1234') {
+    if (usuario === 'kevin' && password === '1234') {
         req.session.usuario = usuario;
         res.json({ mensaje: 'Sesión iniciada, bienvenido ' + usuario });
     } else {

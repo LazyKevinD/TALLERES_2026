@@ -16,25 +16,29 @@
     <h2 id="resultado"></h2>
 
     <script>
-        async function Inicio() {
+        async function login() {
             const response = await fetch('/login', {
                 method: "POST",
-                headers: ('Content Type', 'aplication/json'),
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 credentials: 'include',
                 body: JSON.stringify({
-                    usuario: document.getElementById('usuario'),value,
-                    password: document.getElementById('password'),value
+                    usuario: document.getElementById('usuario').value,
+                    password: document.getElementById('password').value
                 })
             });
+
             const data = await response.json();
             document.getElementById('resultado').innerText = data.mensaje;
         }
 
-        async function logout(){
+        async function logout() {
             const response = await fetch('/logout', {
                 method: "POST",
                 credentials: 'include'
             });
+
             const data = await response.json();
             document.getElementById('resultado').innerText = data.mensaje;
         }
